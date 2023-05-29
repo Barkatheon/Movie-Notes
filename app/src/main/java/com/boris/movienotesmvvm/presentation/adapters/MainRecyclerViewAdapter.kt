@@ -7,11 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boris.movienotesmvvm.R
-import com.boris.movienotesmvvm.data.storage.remote.response.Movie
+import com.boris.movienotesmvvm.data.storage.remote.response.MovieResponse
+import com.boris.movienotesmvvm.domain.model.Movie
 
 class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.MainViewHolder>() {
 
-    val movieList = ArrayList<Movie>()
+    val moviesList = ArrayList<Movie>()
 
     class MainViewHolder(itemView: View) : ViewHolder(itemView) {
         val textViewTitle = itemView.findViewById<TextView>(R.id.titleItem)
@@ -25,17 +26,17 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
     }
 
     override fun getItemCount(): Int {
-        return movieList.size
+        return moviesList.size
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.textViewTitle.text = movieList[position].title
-        holder.textViewYear.text = movieList[position].releaseDate
+        holder.textViewTitle.text = moviesList[position].title
+        holder.textViewYear.text = moviesList[position].year
 
     }
     fun setListOfMovies(list : List<Movie>){
-        movieList.clear()
-        movieList.addAll(list)
+        moviesList.clear()
+        moviesList.addAll(list)
         notifyDataSetChanged()
     }
 }

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                     Log.i("mylog", "flow in mainscreen collected")
                     when (state) {
                         is Resource.Error -> ""//Todo
-                        is Resource.Loading -> ""//Todo
+                        is Resource.Loading -> Log.i("mylog", "flow loadin collected")//Todo
                         is Resource.Success -> state.data?.let { adapter.setListOfMovies(it) }
 
 
