@@ -1,4 +1,4 @@
-package com.boris.movienotesmvvm.presentation
+package com.boris.movienotesmvvm.presentation.screens
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
@@ -35,11 +36,11 @@ class MainViewModel : ViewModel() {
         )
     }
 
+    private var _stateFlowData = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading())
+    val stateFlowData
+        get() = _stateFlowData.asStateFlow()
 
-    var stateFlowData = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading())
 
-    //var dataStateLive = getPopularMoviesUseCase.execute().asLiveData()
-    //var stateFlowData = getPopularMoviesUseCase.execute()
     init {
         getStateFlowData()
         Log.i("myLog", "init of viewModel")
@@ -62,7 +63,7 @@ class MainViewModel : ViewModel() {
     fun getStateFlowData() = viewModelScope.launch {
         Log.i("myLog", "viewModel get state flow data worked")
         fetchPopularMovies().collectLatest {
-            stateFlowData.value = it
+            _stateFlowData.value = it
         }
     }
 }
