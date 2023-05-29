@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -34,28 +35,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var textView = findViewById<TextView>(R.id.textView)
+        textView.setOnClickListener {
+            viewModel.getStateFlowData()
+        }
 
-
-        /*lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.stateFlowData.collect { state ->
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.stateFlowData.collectLatest { state ->
                     Log.i("mylog", "flow in mainscreen collected")
-                    when(state){
+                    when (state) {
                         is Resource.Error -> textView.text = state.message
                         is Resource.Loading -> textView.text = "Loading"
-                        is Resource.Success -> textView.text = state.data?.get(0)?.title ?: "no data from server"
+                        is Resource.Success -> textView.text =
+                            state.data?.get(0)?.title ?: "no data from server"
                     }
-            }
+                }
             }
 
-        }*/
-        viewModel.dataStateLive.observe(this) { state ->
-            Log.i("mylog", "livedata in mainscreen updated")
-            when(state){
-                is Resource.Error -> textView.text = state.message
-                is Resource.Loading -> textView.text = "Loading"
-                is Resource.Success -> textView.text = state.data?.get(0)?.title ?: "no data from server"
-            }
         }
+
     }
 }
