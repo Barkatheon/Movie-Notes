@@ -8,6 +8,7 @@ import com.boris.movienotesmvvm.data.repository.MovieRepositoryImpl
 import com.boris.movienotesmvvm.data.storage.remote.response.MovieResponse
 import com.boris.movienotesmvvm.domain.model.Movie
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,20 +16,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
-
-    val movieRepositoryImpl: MovieRepositoryImpl by lazy { MovieRepositoryImpl() }
-    val getPopularMoviesUseCase: GetPopularMoviesUseCase by lazy {
-        GetPopularMoviesUseCase(
-            movieRepositoryImpl
-        )
-    }
+@HiltViewModel
+class MainViewModel @Inject constructor(private val getPopularMoviesUseCase: GetPopularMoviesUseCase) :
+    ViewModel() {
 
     private val _stateFlowData = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading())
     val stateFlowData
         get() = _stateFlowData.asStateFlow()
-
 
     init {
         getStateFlowData()
@@ -39,12 +36,11 @@ class MainViewModel : ViewModel() {
     fun fetchPopularMovies(): Flow<Resource<List<Movie>>> = flow {
         Log.i("myLog", "viewModel fetch popular movies worked")
         try {
-            emit(Resource.Loading()) //todo This one not necessary probably
             delay(3000)
             val data = getPopularMoviesUseCase.execute().movies
             emit(Resource.Success(data))
         } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage ?: "Unknown Error"))
+            emit(Resource.Error(e.stackTraceToString() ?: "Unknown Error"))
         }
 
     }

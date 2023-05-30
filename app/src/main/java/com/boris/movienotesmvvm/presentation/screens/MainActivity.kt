@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boris.movienotesmvvm.R
 import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.presentation.adapters.MainRecyclerViewAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     val viewModel: MainViewModel by viewModels()
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.stateFlowData.collectLatest { state ->
                     Log.i("mylog", "flow in mainscreen collected")
                     when (state) {
-                        is Resource.Error -> ""//Todo
+                        is Resource.Error -> Log.i("mylog", "${state.message}")//Todo
                         is Resource.Loading -> Log.i("mylog", "flow loadin collected")//Todo
                         is Resource.Success -> state.data?.let { adapter.setListOfMovies(it) }
 
