@@ -23,6 +23,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val getPopularMoviesUseCase: GetPopularMoviesUseCase) :
     ViewModel() {
 
+    private var currentPage: Int = 1
     private val _stateFlowData = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading())
     val stateFlowData
         get() = _stateFlowData.asStateFlow()
@@ -36,8 +37,9 @@ class MainViewModel @Inject constructor(private val getPopularMoviesUseCase: Get
     fun fetchPopularMovies(): Flow<Resource<List<Movie>>> = flow {
         Log.i("myLog", "viewModel fetch popular movies worked")
         try {
-            delay(3000)
-            val data = getPopularMoviesUseCase.execute().movies
+            emit(Resource.Loading())
+
+            val data = getPopularMoviesUseCase.execute(currentPage).movies
             emit(Resource.Success(data))
         } catch (e: Exception) {
             emit(Resource.Error(e.stackTraceToString() ?: "Unknown Error"))
@@ -50,5 +52,11 @@ class MainViewModel @Inject constructor(private val getPopularMoviesUseCase: Get
         fetchPopularMovies().collectLatest {
             _stateFlowData.value = it
         }
+    }
+
+    fun fetchNextPage(){
+        currentPage++
+        Log.i("myLog", "fetchNextPage worked page = $currentPage")
+        getStateFlowData()
     }
 }

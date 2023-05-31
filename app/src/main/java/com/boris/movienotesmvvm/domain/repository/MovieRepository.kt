@@ -5,5 +5,5 @@ import com.boris.movienotesmvvm.domain.model.MoviesModel
 
 interface MovieRepository {
 
-    suspend fun getMovies() : MoviesModel
+    suspend fun getMovies(page : Int) : MoviesModel
 }

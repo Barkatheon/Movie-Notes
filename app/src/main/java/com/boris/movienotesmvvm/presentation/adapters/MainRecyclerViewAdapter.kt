@@ -43,8 +43,15 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
     }
 
     fun setListOfMovies(list: List<Movie>) {
-        moviesList.clear()
-        moviesList.addAll(list)
-        notifyDataSetChanged()
+        if (moviesList.isEmpty()) {
+            moviesList.addAll(list)
+            notifyDataSetChanged()
+        } else {
+            val previousListSize = moviesList.size
+            moviesList.addAll(list)
+            notifyItemChanged(previousListSize, moviesList.size)
+        }
+
+
     }
 }

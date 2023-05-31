@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var adapter : MainRecyclerViewAdapter
+    var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +38,18 @@ class MainActivity : AppCompatActivity() {
                 viewModel.stateFlowData.collectLatest { state ->
                     Log.i("mylog", "flow in mainscreen collected")
                     when (state) {
-                        is Resource.Error -> Log.i("mylog", "${state.message}")//Todo
-                        is Resource.Loading -> Log.i("mylog", "flow loadin collected")//Todo
-                        is Resource.Success -> state.data?.let { adapter.setListOfMovies(it) }
+                        is Resource.Loading -> {
+                            Log.i("mylog", "flow loadin collected")
+                            isLoading = true
+                        }
+                        is Resource.Success -> {
+                            state.data?.let { adapter.setListOfMovies(it) }
+                            isLoading = false
+                        }
+                        is Resource.Error -> {
+                            Log.i("mylog", "${state.message}")
+                            isLoading = false
+                        }
 
 
                     }
@@ -54,5 +64,25 @@ class MainActivity : AppCompatActivity() {
         adapter = MainRecyclerViewAdapter()
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         recyclerView.adapter = adapter
+
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0){
+                    if (!isLoading){
+                        viewModel.fetchNextPage()
+                    }
+                }
+
+            }
+        })
+
+
     }
 }

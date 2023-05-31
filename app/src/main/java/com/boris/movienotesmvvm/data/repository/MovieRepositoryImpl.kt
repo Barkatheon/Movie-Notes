@@ -8,9 +8,9 @@ import com.boris.movienotesmvvm.domain.repository.MovieRepository
 
 class MovieRepositoryImpl(private val popularMovieService: PopularMovieService) : MovieRepository {
 
-    private val apiKey =  "467cf966e94812a040f4cd57a8aeb313"
+    private val apiKey = "467cf966e94812a040f4cd57a8aeb313"
 
-    override suspend fun getMovies(): MoviesModel {
-        return popularMovieService.getPopularMovies(apiKey).toMoviesModel()
+    override suspend fun getMovies(page: Int): MoviesModel {
+        return popularMovieService.getPopularMovies(apiKey, page).toMoviesModel()
     }
 }
