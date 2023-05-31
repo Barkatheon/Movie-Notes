@@ -1,5 +1,6 @@
 package com.boris.movienotesmvvm.data.mapper
 
+import com.boris.movienotesmvvm.common.Constants
 import com.boris.movienotesmvvm.data.storage.remote.response.MovieResponse
 import com.boris.movienotesmvvm.data.storage.remote.response.MoviesRemoteResponse
 import com.boris.movienotesmvvm.domain.model.Movie
@@ -10,7 +11,7 @@ fun MovieResponse.toMovie() : Movie {
         id = id,
         title = title,
         year = releaseDate,
-        posterPath = posterPath
+        posterPath = Constants.POSTER_BASE_URL + posterPath
     )
 }
 fun MoviesRemoteResponse.toMoviesModel(): MoviesModel{
