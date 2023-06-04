@@ -1,4 +1,4 @@
-package com.boris.movienotesmvvm.presentation.screens
+package com.boris.movienotesmvvm.presentation.screens.home
 
 import android.os.Bundle
 import android.util.Log
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class PopularFragment : Fragment() {
 
-    val viewModel: MainViewModel by viewModels()
+    val viewModel: PopularViewModel by viewModels()
 
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: MainRecyclerViewAdapter

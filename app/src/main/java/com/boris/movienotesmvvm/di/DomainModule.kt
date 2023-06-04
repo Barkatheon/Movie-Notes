@@ -1,6 +1,7 @@
 package com.boris.movienotesmvvm.di
 
 import com.boris.movienotesmvvm.domain.repository.MovieRepository
+import com.boris.movienotesmvvm.domain.usecases.GetMovieDetailUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,5 +15,9 @@ class DomainModule {
     @Provides
     fun provideGetPopularMoviesUseCase(movieRepository: MovieRepository): GetPopularMoviesUseCase {
         return GetPopularMoviesUseCase(movieRepository = movieRepository)
+    }
+    @Provides
+    fun provideGetMovieDetailUseCase(movieRepository: MovieRepository): GetMovieDetailUseCase{
+        return GetMovieDetailUseCase(movieRepository = movieRepository)
     }
 }

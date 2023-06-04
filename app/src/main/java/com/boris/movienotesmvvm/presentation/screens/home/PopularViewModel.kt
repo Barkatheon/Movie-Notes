@@ -1,26 +1,22 @@
-package com.boris.movienotesmvvm.presentation.screens
+package com.boris.movienotesmvvm.presentation.screens.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boris.movienotesmvvm.common.Resource
-import com.boris.movienotesmvvm.data.repository.MovieRepositoryImpl
-import com.boris.movienotesmvvm.data.storage.remote.response.MovieResponse
 import com.boris.movienotesmvvm.domain.model.Movie
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val getPopularMoviesUseCase: GetPopularMoviesUseCase) :
+class PopularViewModel @Inject constructor(private val getPopularMoviesUseCase: GetPopularMoviesUseCase) :
     ViewModel() {
 
     private var currentPage: Int = 1
@@ -38,11 +34,10 @@ class MainViewModel @Inject constructor(private val getPopularMoviesUseCase: Get
         Log.i("myLog", "viewModel fetch popular movies worked")
         try {
             emit(Resource.Loading())
-
             val data = getPopularMoviesUseCase.execute(currentPage).movies
             emit(Resource.Success(data))
         } catch (e: Exception) {
-            emit(Resource.Error(e.stackTraceToString() ?: "Unknown Error"))
+            emit(Resource.Error(e.localizedMessage?.toString() ?: "Unknown Error"))
         }
 
     }

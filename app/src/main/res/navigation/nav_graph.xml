@@ -7,15 +7,24 @@
 
     <fragment
         android:id="@+id/popularFragment"
-        android:name="com.boris.movienotesmvvm.presentation.screens.PopularFragment"
-        android:label="PopularFragment" >
+        android:name="com.boris.movienotesmvvm.presentation.screens.home.PopularFragment"
+        android:label="PopularFragment">
         <action
             android:id="@+id/action_popularFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment">
+            <argument
+                android:name="id"
+                app:argType="integer" />
+        </action>
     </fragment>
+
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.boris.movienotesmvvm.presentation.screens.DetailFragment"
+        android:name="com.boris.movienotesmvvm.presentation.screens.detail.DetailFragment"
         android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" />
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
 </navigation>

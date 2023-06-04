@@ -11,7 +11,8 @@ fun MovieResponse.toMovie() : Movie {
         id = id,
         title = title,
         year = releaseDate,
-        posterPath = Constants.POSTER_BASE_URL + posterPath
+        posterPath = Constants.POSTER_BASE_URL + posterPath,
+        overview = overview
     )
 }
 fun MoviesRemoteResponse.toMoviesModel(): MoviesModel{

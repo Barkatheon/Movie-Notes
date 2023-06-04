@@ -2,7 +2,7 @@ package com.boris.movienotesmvvm.di
 
 import com.boris.movienotesmvvm.common.Constants
 import com.boris.movienotesmvvm.data.repository.MovieRepositoryImpl
-import com.boris.movienotesmvvm.data.storage.remote.service.PopularMovieService
+import com.boris.movienotesmvvm.data.storage.remote.service.MovieService
 import com.boris.movienotesmvvm.domain.repository.MovieRepository
 import dagger.Module
 import dagger.Provides
@@ -19,18 +19,18 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun providePopularMovieService(): PopularMovieService {
+    fun providePopularMovieService(): MovieService {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(PopularMovieService::class.java)
+            .create(MovieService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideMovieRepository(popularMovieService: PopularMovieService): MovieRepository {
-        return MovieRepositoryImpl(popularMovieService)
+    fun provideMovieRepository(movieService: MovieService): MovieRepository {
+        return MovieRepositoryImpl(movieService)
     }
 
 

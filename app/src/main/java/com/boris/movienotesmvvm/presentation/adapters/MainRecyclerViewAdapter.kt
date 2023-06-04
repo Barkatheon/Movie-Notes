@@ -9,9 +9,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boris.movienotesmvvm.R
-import com.boris.movienotesmvvm.data.storage.remote.response.MovieResponse
 import com.boris.movienotesmvvm.domain.model.Movie
-import com.boris.movienotesmvvm.presentation.screens.PopularFragmentDirections
+import com.boris.movienotesmvvm.presentation.screens.home.PopularFragmentDirections
+
 import com.bumptech.glide.Glide
 
 class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.MainViewHolder>() {
@@ -43,7 +43,8 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
             .into(holder.imageViewPoster)
 
         holder.itemView.setOnClickListener {
-            val action = PopularFragmentDirections.actionPopularFragmentToDetailFragment()
+            val movieId = moviesList[position].id
+            val action = PopularFragmentDirections.actionPopularFragmentToDetailFragment(movieId)
             it.findNavController().navigate(action)
         }
 
