@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.viewModels
@@ -15,8 +16,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.boris.movienotesmvvm.R
 import com.boris.movienotesmvvm.common.Resource
+import com.boris.movienotesmvvm.domain.model.Movie
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -25,6 +28,8 @@ class DetailFragment : Fragment() {
 
     private val detailViewModel: DetailViewModel by viewModels()
     private val movieId: DetailFragmentArgs by navArgs()
+    lateinit var currentMovie: Movie
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,6 +43,7 @@ class DetailFragment : Fragment() {
         val titleTextView = view.findViewById<TextView>(R.id.titleDetail)
         val overviewTextView = view.findViewById<TextView>(R.id.overviewDetail)
         val posterImageView = view.findViewById<ImageView>(R.id.imageDetail)
+        val addToWatchlist = view.findViewById<Button>(R.id.addToWatchlistButton)
 
         if (savedInstanceState == null) {
             detailViewModel.fetchMovieDetail(movieId = movieId.id)
@@ -51,6 +57,7 @@ class DetailFragment : Fragment() {
                         is Resource.Error -> ""
                         is Resource.Loading -> Log.i("mylog", "Detail screen flow loadin collected")
                         is Resource.Success -> {
+                            state.data?.let { currentMovie = it }
                             state.data?.let { titleTextView.text = it.title }
                             state.data?.let { overviewTextView.text = it.overview }
                             state.data?.let {
@@ -59,6 +66,7 @@ class DetailFragment : Fragment() {
                                     .placeholder(R.drawable.baseline_local_movies_24)
                                     .into(posterImageView)
                             }
+
                         }
 
                     }
@@ -68,6 +76,15 @@ class DetailFragment : Fragment() {
             }
         }
 
+        addToWatchlist.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                detailViewModel.saveMovieToWatchlist(currentMovie)
+
+            }
+
+        }
 
     }
+
+
 }

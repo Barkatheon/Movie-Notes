@@ -1,5 +1,6 @@
 package com.boris.movienotesmvvm.presentation.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,7 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
 
     fun setListOfMovies(list: List<Movie>) {
         if (moviesList.isEmpty()) {
+            Log.i("mylog", "adapter movielist empty")
             moviesList.addAll(list)
             notifyDataSetChanged()
         } else {

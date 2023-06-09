@@ -25,26 +25,15 @@ class PopularViewModel @Inject constructor(private val getPopularMoviesUseCase: 
         get() = _stateFlowData.asStateFlow()
 
     init {
-        getStateFlowData()
+        fetchPopularMovies()
         Log.i("myLog", "init of viewModel")
     }
 
 
-    fun fetchPopularMovies(): Flow<Resource<List<Movie>>> = flow {
-        Log.i("myLog", "viewModel fetch popular movies worked")
-        try {
-            emit(Resource.Loading())
-            val data = getPopularMoviesUseCase.execute(currentPage).movies
-            emit(Resource.Success(data))
-        } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage?.toString() ?: "Unknown Error"))
-        }
 
-    }
-
-    fun getStateFlowData() = viewModelScope.launch {
+    fun fetchPopularMovies() = viewModelScope.launch {
         Log.i("myLog", "viewModel get state flow data worked")
-        fetchPopularMovies().collectLatest {
+        getPopularMoviesUseCase.execute(currentPage).collectLatest {
             _stateFlowData.value = it
         }
     }
@@ -52,6 +41,6 @@ class PopularViewModel @Inject constructor(private val getPopularMoviesUseCase: 
     fun fetchNextPage(){
         currentPage++
         Log.i("myLog", "fetchNextPage worked page = $currentPage")
-        getStateFlowData()
+        fetchPopularMovies()
     }
 }
