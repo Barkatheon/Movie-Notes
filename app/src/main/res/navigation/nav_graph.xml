@@ -31,7 +31,11 @@
         android:id="@+id/watchlistFragment"
         android:name="com.boris.movienotesmvvm.presentation.screens.watchlist.WatchlistFragment"
         android:label="fragment_watchlist"
-        tools:layout="@layout/fragment_watchlist" />
+        tools:layout="@layout/fragment_watchlist" >
+        <action
+            android:id="@+id/action_watchlistFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.boris.movienotesmvvm.presentation.screens.favorite.FavoriteFragment"

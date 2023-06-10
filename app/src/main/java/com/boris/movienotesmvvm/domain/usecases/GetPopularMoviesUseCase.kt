@@ -10,7 +10,11 @@ import kotlinx.coroutines.flow.flow
 
 class GetPopularMoviesUseCase(private val movieRepository: MovieRepository) {
 
-    fun execute(page: Int): Flow<Resource<List<Movie>>> = flow {
+
+    suspend fun execute(page : Int) : List<Movie>{
+        return movieRepository.getMovies(page).movies
+    }
+    /*fun execute(page: Int): Flow<Resource<List<Movie>>> = flow {
         Log.i("myLog", "viewModel fetch popular movies worked")
         try {
             emit(Resource.Loading())
@@ -20,6 +24,6 @@ class GetPopularMoviesUseCase(private val movieRepository: MovieRepository) {
             emit(Resource.Error(e.localizedMessage?.toString() ?: "Unknown Error"))
         }
 
-    }
+    }*/
 }
 

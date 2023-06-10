@@ -5,6 +5,7 @@ import com.boris.movienotesmvvm.domain.repository.MovieRepository
 import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetMovieDetailUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
+import com.boris.movienotesmvvm.domain.usecases.GetWatchlistMoviesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +27,9 @@ class DomainModule {
     @Provides
     fun provideAddToWatchlistUseCase(movieLocalRepository: MovieLocalRepository): AddToWatchlistUseCase{
         return AddToWatchlistUseCase(movieLocalRepository = movieLocalRepository)
+    }
+    @Provides
+    fun provideGetWatchlistMoviesUseCase(movieLocalRepository: MovieLocalRepository): GetWatchlistMoviesUseCase{
+        return GetWatchlistMoviesUseCase(movieLocalRepository = movieLocalRepository)
     }
 }

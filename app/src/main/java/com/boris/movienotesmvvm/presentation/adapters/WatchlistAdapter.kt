@@ -12,30 +12,29 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boris.movienotesmvvm.R
 import com.boris.movienotesmvvm.domain.model.Movie
 import com.boris.movienotesmvvm.presentation.screens.home.PopularFragmentDirections
-
+import com.boris.movienotesmvvm.presentation.screens.watchlist.WatchlistFragmentDirections
 import com.bumptech.glide.Glide
 
-class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.MainViewHolder>() {
+class WatchlistAdapter : RecyclerView.Adapter<WatchlistAdapter.MyViewHolder>() {
 
-    val moviesList = ArrayList<Movie>()
+    private val moviesList = ArrayList<Movie>()
 
-    class MainViewHolder(itemView: View) : ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : ViewHolder(itemView) {
         val textViewTitle = itemView.findViewById<TextView>(R.id.titleItem)
         val textViewYear = itemView.findViewById<TextView>(R.id.yearItem)
         val imageViewPoster = itemView.findViewById<ImageView>(R.id.imageItem)
-
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false)
-        return MainViewHolder(view)
+        return MyViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return moviesList.size
     }
 
-    override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.textViewTitle.text = moviesList[position].title
         holder.textViewYear.text = moviesList[position].year
         Glide.with(holder.itemView)
@@ -45,26 +44,27 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
 
         holder.itemView.setOnClickListener {
             val movieId = moviesList[position].id
-            val action = PopularFragmentDirections.actionPopularFragmentToDetailFragment(movieId)
+            val action =
+                WatchlistFragmentDirections.actionWatchlistFragmentToDetailFragment(movieId)
             it.findNavController().navigate(action)
         }
 
 
     }
 
+
     fun setListOfMovies(list: List<Movie>) {
         if (moviesList.isEmpty()) {
-            Log.i("mylog", "adapter movielist empty")
+            Log.i("myLog", "watchlist adapter is empty")
             moviesList.addAll(list)
             notifyDataSetChanged()
         } else {
-            val previousListSize = moviesList.size
             moviesList.clear()
             moviesList.addAll(list)
-            notifyItemChanged(previousListSize, moviesList.size)
-
+            notifyDataSetChanged()
         }
-        Log.i("mylog", "adapter movie list size ${moviesList.size}")
 
     }
+
+
 }

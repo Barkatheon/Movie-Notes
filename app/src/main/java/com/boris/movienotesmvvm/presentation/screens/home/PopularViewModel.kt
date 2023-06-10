@@ -7,6 +7,7 @@ import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.domain.model.Movie
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class PopularViewModel @Inject constructor(private val getPopularMoviesUseCase: GetPopularMoviesUseCase) :
     ViewModel() {
 
+    private val fullMovieList = mutableListOf<Movie>()
     private var currentPage: Int = 1
     private val _stateFlowData = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading())
     val stateFlowData
@@ -30,13 +32,24 @@ class PopularViewModel @Inject constructor(private val getPopularMoviesUseCase: 
     }
 
 
+    fun fetchPopularMovies() = viewModelScope.launch(Dispatchers.IO) {
+        Log.i("myLog", "viewModel get state flow data worked")
+        try {
+            _stateFlowData.value = Resource.Loading()
+            val data = getPopularMoviesUseCase.execute(currentPage)
+            fullMovieList.addAll(data)
+            _stateFlowData.value = Resource.Success(fullMovieList)
+        } catch (e: Exception) {
+            _stateFlowData.value = Resource.Error(e.localizedMessage?.toString() ?: "Unknown Error")
+        }
+    }
 
-    fun fetchPopularMovies() = viewModelScope.launch {
+    /*fun fetchPopularMovies() = viewModelScope.launch {
         Log.i("myLog", "viewModel get state flow data worked")
         getPopularMoviesUseCase.execute(currentPage).collectLatest {
             _stateFlowData.value = it
         }
-    }
+    }*/
 
     fun fetchNextPage(){
         currentPage++

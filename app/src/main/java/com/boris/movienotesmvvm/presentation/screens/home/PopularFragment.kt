@@ -33,6 +33,7 @@ class PopularFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_popular, container, false)
     }
 
@@ -41,7 +42,6 @@ class PopularFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recViewMain)
         setUpRecyclerView()
-
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -54,7 +54,10 @@ class PopularFragment : Fragment() {
                         }
 
                         is Resource.Success -> {
-                            state.data?.let { adapter.setListOfMovies(it) }
+                            state.data?.let {
+                                adapter.setListOfMovies(it)
+                                Log.i("myLog", "${it.size}")
+                            }
                             isLoading = false
                         }
 
@@ -73,10 +76,11 @@ class PopularFragment : Fragment() {
     }
 
     private fun setUpRecyclerView() {
-        Log.i("mylog", "setupRecview")
+
         adapter = MainRecyclerViewAdapter()
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+        Log.i("mylog", "setupRecview with adapter ${adapter.hashCode()}")
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -95,5 +99,17 @@ class PopularFragment : Fragment() {
 
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("myLog", "popularFragmentOndestroy")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i("myLog", "popularFragmentOnCreate")
+
+
     }
 }
