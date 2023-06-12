@@ -3,6 +3,7 @@ package com.boris.movienotesmvvm.di
 import com.boris.movienotesmvvm.domain.repository.MovieLocalRepository
 import com.boris.movienotesmvvm.domain.repository.MovieRepository
 import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
+import com.boris.movienotesmvvm.domain.usecases.DeleteFromWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetMovieDetailUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetWatchlistMoviesUseCase
@@ -31,5 +32,9 @@ class DomainModule {
     @Provides
     fun provideGetWatchlistMoviesUseCase(movieLocalRepository: MovieLocalRepository): GetWatchlistMoviesUseCase{
         return GetWatchlistMoviesUseCase(movieLocalRepository = movieLocalRepository)
+    }
+    @Provides
+    fun provideDeleteFromWatchlistUseCase(movieLocalRepository: MovieLocalRepository): DeleteFromWatchlistUseCase{
+        return DeleteFromWatchlistUseCase(movieLocalRepository = movieLocalRepository)
     }
 }

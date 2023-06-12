@@ -19,10 +19,22 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
 
     val moviesList = ArrayList<Movie>()
 
+    interface OnItemzClickListener {
+        fun onItemzClick(item: Movie)
+        fun onItem2Click(item: Movie, view: View)
+    }
+
+    private var itemzClickListener: OnItemzClickListener? = null
+
+    fun setOnItemzClickListener(listener: OnItemzClickListener) {
+        itemzClickListener = listener
+    }
+
     class MainViewHolder(itemView: View) : ViewHolder(itemView) {
         val textViewTitle = itemView.findViewById<TextView>(R.id.titleItem)
         val textViewYear = itemView.findViewById<TextView>(R.id.yearItem)
         val imageViewPoster = itemView.findViewById<ImageView>(R.id.imageItem)
+        val iconWatchlist = itemView.findViewById<ImageView>(R.id.iconWatchlist)
 
     }
 
@@ -36,19 +48,28 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.textViewTitle.text = moviesList[position].title
-        holder.textViewYear.text = moviesList[position].year
+        val movie = moviesList[position]
+        holder.textViewTitle.text = movie.title
+        holder.textViewYear.text = position.toString()
+        if (movie.isWatchlist) {
+            holder.iconWatchlist.setImageResource(R.drawable.bookmark_added)
+        } else {
+            holder.iconWatchlist.setImageResource(R.drawable.bookmark_empty)
+        }
+
         Glide.with(holder.itemView)
-            .load(moviesList[position].posterPath)
+            .load(movie.posterPath)
             .placeholder(R.drawable.baseline_local_movies_24)
             .into(holder.imageViewPoster)
 
-        holder.itemView.setOnClickListener {
-            val movieId = moviesList[position].id
-            val action = PopularFragmentDirections.actionPopularFragmentToDetailFragment(movieId)
-            it.findNavController().navigate(action)
+        holder.itemView.setOnClickListener { itemView ->
+            itemzClickListener?.onItem2Click(item = movie, view = itemView)
         }
 
+        holder.iconWatchlist.setOnClickListener {
+            itemzClickListener?.onItemzClick(movie)
+            notifyItemChanged(holder.bindingAdapterPosition)
+        }
 
     }
 
@@ -61,7 +82,7 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
             val previousListSize = moviesList.size
             moviesList.clear()
             moviesList.addAll(list)
-            notifyItemChanged(previousListSize, moviesList.size)
+            notifyDataSetChanged()
 
         }
         Log.i("mylog", "adapter movie list size ${moviesList.size}")

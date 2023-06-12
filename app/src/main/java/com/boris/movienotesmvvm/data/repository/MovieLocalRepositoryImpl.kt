@@ -14,4 +14,8 @@ class MovieLocalRepositoryImpl(private val movieDao: MovieDao) : MovieLocalRepos
     override suspend fun saveMovie(movie: Movie) {
         movieDao.insertMovie(movie)
     }
+
+    override suspend fun deleteMovie(movie: Movie) {
+        movieDao.deleteSavedMovie(movie)
+    }
 }

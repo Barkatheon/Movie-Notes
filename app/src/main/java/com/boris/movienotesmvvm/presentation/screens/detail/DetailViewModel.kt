@@ -6,6 +6,7 @@ import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.domain.model.Movie
 import com.boris.movienotesmvvm.domain.repository.MovieRepository
 import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
+import com.boris.movienotesmvvm.domain.usecases.DeleteFromWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetMovieDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val getMovieDetailUseCase: GetMovieDetailUseCase,
-    private val addToWatchlistUseCase: AddToWatchlistUseCase
+    private val addToWatchlistUseCase: AddToWatchlistUseCase,
+    private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase
 ) :
     ViewModel() {
 
@@ -38,7 +40,12 @@ class DetailViewModel @Inject constructor(
         }
 
     }
-    suspend fun saveMovieToWatchlist(movie:Movie){
-        addToWatchlistUseCase.execute(movie)
+
+    suspend fun addToWatchlist(movie: Movie) {
+        addToWatchlistUseCase.execute(movie = movie)
+    }
+
+    suspend fun deleteFromWatchlist(movie: Movie) {
+        deleteFromWatchlistUseCase.execute(movie = movie)
     }
 }

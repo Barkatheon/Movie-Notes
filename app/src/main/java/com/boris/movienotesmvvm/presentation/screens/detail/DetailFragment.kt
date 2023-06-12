@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +44,7 @@ class DetailFragment : Fragment() {
         val titleTextView = view.findViewById<TextView>(R.id.titleDetail)
         val overviewTextView = view.findViewById<TextView>(R.id.overviewDetail)
         val posterImageView = view.findViewById<ImageView>(R.id.imageDetail)
-        val addToWatchlist = view.findViewById<Button>(R.id.addToWatchlistButton)
+        val iconWatchlist = view.findViewById<ImageView>(R.id.iconWatchlist)
 
         if (savedInstanceState == null) {
             detailViewModel.fetchMovieDetail(movieId = movieId.id)
@@ -66,6 +67,13 @@ class DetailFragment : Fragment() {
                                     .placeholder(R.drawable.baseline_local_movies_24)
                                     .into(posterImageView)
                             }
+                            state.data?.let {
+                                if (it.isWatchlist) {
+                                    iconWatchlist.setImageResource(R.drawable.bookmark_added)
+                                } else {
+                                    iconWatchlist.setImageResource(R.drawable.bookmark_empty)
+                                }
+                            }
 
                         }
 
@@ -76,10 +84,16 @@ class DetailFragment : Fragment() {
             }
         }
 
-        addToWatchlist.setOnClickListener {
+        iconWatchlist.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                detailViewModel.saveMovieToWatchlist(currentMovie)
-
+                if (!currentMovie.isWatchlist) {
+                    currentMovie.isWatchlist = true
+                    detailViewModel.addToWatchlist(currentMovie)
+                } else {
+                    currentMovie.isWatchlist = false
+                    detailViewModel.deleteFromWatchlist(currentMovie)
+                }
+                Toast.makeText(requireContext(), "added/deleted movie", Toast.LENGTH_SHORT).show()
             }
 
         }

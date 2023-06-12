@@ -59,9 +59,10 @@ class WatchlistAdapter : RecyclerView.Adapter<WatchlistAdapter.MyViewHolder>() {
             moviesList.addAll(list)
             notifyDataSetChanged()
         } else {
+            val previousListSize = moviesList.size
             moviesList.clear()
             moviesList.addAll(list)
-            notifyDataSetChanged()
+            notifyItemChanged(previousListSize, moviesList.size)
         }
 
     }

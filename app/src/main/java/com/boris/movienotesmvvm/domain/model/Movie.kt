@@ -9,6 +9,7 @@ data class Movie(
     val title: String,
     val year: String,
     val posterPath: String,
-    val overview: String
+    val overview: String,
+    var isWatchlist: Boolean = false
 
 )

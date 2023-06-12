@@ -10,5 +10,7 @@ interface MovieLocalRepository {
 
     suspend fun saveMovie(movie: Movie)
 
+    suspend fun deleteMovie(movie:Movie)
+
 
 }

@@ -3,6 +3,8 @@ package com.boris.movienotesmvvm.presentation.screens.watchlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boris.movienotesmvvm.domain.model.Movie
+import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
+import com.boris.movienotesmvvm.domain.usecases.DeleteFromWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetWatchlistMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +13,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchlistViewModel @Inject constructor(private val getWatchlistMoviesUseCase: GetWatchlistMoviesUseCase) :
+class WatchlistViewModel @Inject constructor(
+    private val getWatchlistMoviesUseCase: GetWatchlistMoviesUseCase,
+    private val addToWatchlistUseCase: AddToWatchlistUseCase,
+    private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase
+) :
     ViewModel() {
 
     /*private var _stateFlowWatchlist = getWatchlistMoviesUseCase.execute()
@@ -26,11 +32,16 @@ class WatchlistViewModel @Inject constructor(private val getWatchlistMoviesUseCa
     init {
         fetchWatchlistMovies()
     }
+
     fun fetchWatchlistMovies() = viewModelScope.launch {
         getWatchlistMoviesUseCase.execute().collect { movieList ->
             _stateFlowWatchlist2.value = movieList
         }
-
-
+    }
+    suspend fun addToWatchlist(movie:Movie){
+        addToWatchlistUseCase.execute(movie = movie)
+    }
+    suspend fun deleteFromWatchlist(movie:Movie){
+        deleteFromWatchlistUseCase.execute(movie = movie)
     }
 }
