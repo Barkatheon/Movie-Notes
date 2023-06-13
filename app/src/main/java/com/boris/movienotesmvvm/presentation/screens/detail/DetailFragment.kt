@@ -55,7 +55,7 @@ class DetailFragment : Fragment() {
                 detailViewModel.movieDetailStateFlow.collectLatest { state ->
                     Log.i("mylog", "flow in Detail screen collected")
                     when (state) {
-                        is Resource.Error -> ""
+                        is Resource.Error -> Log.i("mylog", "Detail screen flow error collected")
                         is Resource.Loading -> Log.i("mylog", "Detail screen flow loadin collected")
                         is Resource.Success -> {
                             state.data?.let { currentMovie = it }
@@ -90,11 +90,11 @@ class DetailFragment : Fragment() {
                     currentMovie.isWatchlist = true
                     detailViewModel.addToWatchlist(currentMovie)
                 } else {
-                    currentMovie.isWatchlist = false
                     detailViewModel.deleteFromWatchlist(currentMovie)
                 }
-                Toast.makeText(requireContext(), "added/deleted movie", Toast.LENGTH_SHORT).show()
+
             }
+            Toast.makeText(requireContext(), "added/deleted movie", Toast.LENGTH_SHORT).show()
 
         }
 

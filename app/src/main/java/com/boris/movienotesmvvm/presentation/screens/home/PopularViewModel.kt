@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,56 +26,65 @@ class PopularViewModel @Inject constructor(
     ViewModel() {
 
     private val fullMovieList = mutableListOf<Movie>()
-    private val watchlistMovies = mutableListOf<Movie>()
     private var currentPage: Int = 1
+
     private val _stateFlowData = MutableStateFlow<Resource<List<Movie>>>(Resource.Loading())
     val stateFlowData
         get() = _stateFlowData.asStateFlow()
 
+    private val _watchlistMovies = MutableStateFlow<List<Movie>>(emptyList())
+
+
     init {
-        fetchPopularMovies()
         fetchWatchlistMovies()
+        fetchPopularMovies()
         Log.i("myLog", "init of viewModel")
     }
 
 
+    fun updateFullMovieList() {
+        if (fullMovieList.isNotEmpty()) {
+            fullMovieList.forEach { movie ->
+                movie.isWatchlist = _watchlistMovies.value.any {
+                    it.id == movie.id
+                }
+            }
+            Log.i("myLog", "updateFullMovieListWorked")
+
+            _stateFlowData.value = Resource.Success(fullMovieList)
+        }
+    }
+
     fun fetchPopularMovies() = viewModelScope.launch(Dispatchers.IO) {
+
         Log.i("myLog", "viewModel get state flow data worked")
         try {
             _stateFlowData.value = Resource.Loading()
             val remoteData = getPopularMoviesUseCase.execute(currentPage)
-            Log.i("myLog", "watchlistdata size = ${watchlistMovies.size}")
-            remoteData.forEach { remoteMovie ->
-                remoteMovie.isWatchlist = watchlistMovies.any {
-                    it.id == remoteMovie.id
-                }
-            }
+            Log.i("myLog", "watchlistdata size = ${_watchlistMovies.value.size}")
             fullMovieList.addAll(remoteData)
-            _stateFlowData.value = Resource.Success(fullMovieList)
+            updateFullMovieList()
         } catch (e: Exception) {
             _stateFlowData.value = Resource.Error(e.localizedMessage?.toString() ?: "Unknown Error")
         }
     }
 
-    fun fetchWatchlistMovies() = viewModelScope.launch {
-        getWatchlistMoviesUseCase.execute().collect {savedMovies ->
-            watchlistMovies.clear()
-            watchlistMovies.addAll(savedMovies)
+    fun fetchWatchlistMovies() = viewModelScope.launch(Dispatchers.IO) {
+        getWatchlistMoviesUseCase.execute().collect { savedMovies ->
+            _watchlistMovies.value = savedMovies
+            updateFullMovieList()
+
         }
     }
-    suspend fun addWatchlistMovie(movie:Movie){
+
+    suspend fun addWatchlistMovie(movie: Movie) {
         addToWatchlistUseCase.execute(movie = movie)
     }
-    suspend fun deleteWatchlistMovie(movie:Movie){
+
+    suspend fun deleteWatchlistMovie(movie: Movie) {
         deleteFromWatchlistUseCase.execute(movie = movie)
     }
 
-    /*fun fetchPopularMovies() = viewModelScope.launch {
-        Log.i("myLog", "viewModel get state flow data worked")
-        getPopularMoviesUseCase.execute(currentPage).collectLatest {
-            _stateFlowData.value = it
-        }
-    }*/
 
     fun fetchNextPage() {
         currentPage++

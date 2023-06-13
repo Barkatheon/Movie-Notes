@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boris.movienotesmvvm.R
 import com.boris.movienotesmvvm.domain.model.Movie
-import com.boris.movienotesmvvm.presentation.screens.home.PopularFragmentDirections
 
 import com.bumptech.glide.Glide
 
