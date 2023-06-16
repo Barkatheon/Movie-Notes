@@ -21,8 +21,10 @@ import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.domain.model.Movie
 import com.boris.movienotesmvvm.presentation.adapters.MainRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PopularFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListener {
@@ -106,42 +108,37 @@ class PopularFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListener
         })
     }
 
-    override fun onItemzClick(item: Movie) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            if (!item.isWatchlist){
-                item.isWatchlist = true
+    override fun onWatchlistIconClick(item: Movie) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            if (!item.isWatchlist) {
                 viewModel.addWatchlistMovie(movie = item)
-            } else{
-                item.isWatchlist = false
+            } else {
                 viewModel.deleteWatchlistMovie(movie = item)
+            }
+            withContext(Dispatchers.Main){
+                var addedOrDeleted = if (item.isWatchlist) "added to" else "deleted from"
+                Toast.makeText(requireContext(), "Movie $addedOrDeleted watchlist", Toast.LENGTH_SHORT)
+                    .show()
 
             }
-            var addedOrDeleted = if(item.isWatchlist) "added to" else "deleted from"
-            Toast.makeText(requireContext(),"Movie $addedOrDeleted watchlist", Toast.LENGTH_SHORT).show()
         }
-
-
-
 
     }
 
-    override fun onItem2Click(item: Movie, view: View) {
+    override fun onMovieClick(item: Movie, view: View) {
         val movieId = item.id
         val action = PopularFragmentDirections.actionPopularFragmentToDetailFragment(movieId)
         view.findNavController().navigate(action)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("myLog", "popularFragmentOndestroy")
+    override fun onFavoriteIconClick(item: Movie) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            if (!item.isFavorite) {
+                viewModel.addFavoriteMovie(movie = item)
+            } else {
+                viewModel.deleteFavoriteMovie(movie = item)
+            }
+        }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("myLog", "popularFragmentOnCreate")
-
-
-    }
-
 
 }

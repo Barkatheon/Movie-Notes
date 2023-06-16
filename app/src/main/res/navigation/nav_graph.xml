@@ -12,9 +12,7 @@
         <action
             android:id="@+id/action_popularFragment_to_detailFragment"
             app:destination="@id/detailFragment">
-            <argument
-                android:name="id"
-                app:argType="integer" />
+
         </action>
     </fragment>
 
@@ -40,5 +38,9 @@
         android:id="@+id/favoriteFragment"
         android:name="com.boris.movienotesmvvm.presentation.screens.favorite.FavoriteFragment"
         android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 </navigation>

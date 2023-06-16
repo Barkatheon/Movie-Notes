@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.boris.movienotesmvvm.domain.model.Movie
 import kotlinx.coroutines.flow.Flow
 
@@ -22,4 +23,7 @@ interface MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movie: Movie)
+
+    @Update
+    suspend fun updateMovie(movie: Movie)
 }

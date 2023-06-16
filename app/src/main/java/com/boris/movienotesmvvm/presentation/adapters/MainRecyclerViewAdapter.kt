@@ -15,11 +15,12 @@ import com.bumptech.glide.Glide
 
 class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.MainViewHolder>() {
 
-    val moviesList = ArrayList<Movie>()
+    private val moviesList = ArrayList<Movie>()
 
     interface OnItemzClickListener {
-        fun onItemzClick(item: Movie)
-        fun onItem2Click(item: Movie, view: View)
+        fun onWatchlistIconClick(item: Movie)
+        fun onMovieClick(item: Movie, view: View)
+        fun onFavoriteIconClick(item : Movie)
     }
 
     private var itemzClickListener: OnItemzClickListener? = null
@@ -33,6 +34,7 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
         val textViewYear = itemView.findViewById<TextView>(R.id.yearItem)
         val imageViewPoster = itemView.findViewById<ImageView>(R.id.imageItem)
         val iconWatchlist = itemView.findViewById<ImageView>(R.id.iconWatchlist)
+        val iconFavorite = itemView.findViewById<ImageView>(R.id.iconFavorite)
 
     }
 
@@ -54,6 +56,11 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
         } else {
             holder.iconWatchlist.setImageResource(R.drawable.bookmark_empty)
         }
+        if (movie.isFavorite) {
+            holder.iconFavorite.setImageResource(R.drawable.favorite_added)
+        } else {
+            holder.iconFavorite.setImageResource(R.drawable.favorite_empty)
+        }
 
         Glide.with(holder.itemView)
             .load(movie.posterPath)
@@ -61,11 +68,15 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
             .into(holder.imageViewPoster)
 
         holder.itemView.setOnClickListener { itemView ->
-            itemzClickListener?.onItem2Click(item = movie, view = itemView)
+            itemzClickListener?.onMovieClick(item = movie, view = itemView)
         }
 
         holder.iconWatchlist.setOnClickListener {
-            itemzClickListener?.onItemzClick(movie)
+            itemzClickListener?.onWatchlistIconClick(item = movie)
+            notifyItemChanged(holder.bindingAdapterPosition)
+        }
+        holder.iconFavorite.setOnClickListener {
+            itemzClickListener?.onFavoriteIconClick(item = movie)
             notifyItemChanged(holder.bindingAdapterPosition)
         }
 
@@ -77,7 +88,6 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
             moviesList.addAll(list)
             notifyDataSetChanged()
         } else {
-            val previousListSize = moviesList.size
             moviesList.clear()
             moviesList.addAll(list)
             notifyDataSetChanged()

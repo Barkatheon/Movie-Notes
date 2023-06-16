@@ -16,13 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boris.movienotesmvvm.R
 import com.boris.movienotesmvvm.domain.model.Movie
-import com.boris.movienotesmvvm.domain.repository.MovieLocalRepository
 import com.boris.movienotesmvvm.presentation.adapters.MainRecyclerViewAdapter
-import com.boris.movienotesmvvm.presentation.adapters.WatchlistAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -48,7 +46,7 @@ class WatchlistFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListen
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                watchlistViewModel.stateFlowWatchlist2.collectLatest { movieList ->
+                watchlistViewModel.watchlistStateFlow.collectLatest { movieList ->
                     adapter.setListOfMovies(movieList)
 
                 }
@@ -74,23 +72,32 @@ class WatchlistFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListen
         Log.i("myLog", "ON CreateFragment Watchlist")
     }
 
-    override fun onItemzClick(item: Movie) {
-        viewLifecycleOwner.lifecycleScope.launch {
+    override fun onWatchlistIconClick(item: Movie) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             if (!item.isWatchlist){
-                item.isWatchlist = true
-                watchlistViewModel.addToWatchlist(item)
+                watchlistViewModel.addWatchlistMovie(item)
             } else{
-                item.isWatchlist = false
-                watchlistViewModel.deleteFromWatchlist(item)
+                watchlistViewModel.deleteWatchlistMovie(item)
             }
-            Toast.makeText(requireContext(), "added/deleted movie", Toast.LENGTH_SHORT).show()
         }
+        Toast.makeText(requireContext(), "added/deleted movie", Toast.LENGTH_SHORT).show()
 
     }
 
-    override fun onItem2Click(item: Movie, view: View) {
+    override fun onMovieClick(item: Movie, view: View) {
         val option = item.id
         val action = WatchlistFragmentDirections.actionWatchlistFragmentToDetailFragment(option)
         view.findNavController().navigate(action)
     }
+
+    override fun onFavoriteIconClick(item: Movie) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            if (!item.isFavorite) {
+                watchlistViewModel.addFavoriteMovie(movie = item)
+            } else {
+                watchlistViewModel.deleteFavoriteMovie(movie = item)
+            }
+        }
+    }
+
 }

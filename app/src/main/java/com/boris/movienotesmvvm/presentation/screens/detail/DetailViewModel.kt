@@ -5,19 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.domain.model.Movie
-import com.boris.movienotesmvvm.domain.repository.MovieRepository
 import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.DeleteFromWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetMovieDetailUseCase
-import com.boris.movienotesmvvm.domain.usecases.GetWatchlistMoviesUseCase
+import com.boris.movienotesmvvm.domain.usecases.GetSavedMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,7 +20,7 @@ class DetailViewModel @Inject constructor(
     private val getMovieDetailUseCase: GetMovieDetailUseCase,
     private val addToWatchlistUseCase: AddToWatchlistUseCase,
     private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase,
-    private val getWatchlistMoviesUseCase: GetWatchlistMoviesUseCase
+    private val getSavedMoviesUseCase: GetSavedMoviesUseCase
 ) :
     ViewModel() {
 
@@ -38,7 +32,7 @@ class DetailViewModel @Inject constructor(
 
     fun fetchMovieDetail(movieId: Int) {
         viewModelScope.launch {
-            getWatchlistMoviesUseCase.execute().collect { savedMovies ->
+            getSavedMoviesUseCase.execute().collect { savedMovies ->
                 Log.i("myLog", "Database query db movie from detail vm")
                 val databaseMovie = savedMovies.firstOrNull { it.id == movieId }
                 if (databaseMovie != null) {

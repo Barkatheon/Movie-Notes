@@ -16,6 +16,11 @@ class MovieLocalRepositoryImpl(private val movieDao: MovieDao) : MovieLocalRepos
     }
 
     override suspend fun deleteMovie(movie: Movie) {
-        movieDao.deleteSavedMovie(movie)
+        if (!movie.isWatchlist && !movie.isFavorite){
+            movieDao.deleteSavedMovie(movie)
+        } else {
+            movieDao.updateMovie(movie)
+        }
+
     }
 }

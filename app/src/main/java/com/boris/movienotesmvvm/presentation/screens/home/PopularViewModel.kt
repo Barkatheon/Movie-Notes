@@ -5,23 +5,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.domain.model.Movie
+import com.boris.movienotesmvvm.domain.usecases.AddToFavoriteUseCase
 import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
+import com.boris.movienotesmvvm.domain.usecases.DeleteFromFavoriteUseCase
 import com.boris.movienotesmvvm.domain.usecases.DeleteFromWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetPopularMoviesUseCase
-import com.boris.movienotesmvvm.domain.usecases.GetWatchlistMoviesUseCase
+import com.boris.movienotesmvvm.domain.usecases.GetSavedMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PopularViewModel @Inject constructor(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
-    private val getWatchlistMoviesUseCase: GetWatchlistMoviesUseCase,
+    private val getSavedMoviesUseCase: GetSavedMoviesUseCase,
     private val addToWatchlistUseCase: AddToWatchlistUseCase,
-    private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase
+    private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase,
+    private val addToFavoriteUseCase: AddToFavoriteUseCase,
+    private val deleteFromFavoriteUseCase: DeleteFromFavoriteUseCase
 ) :
     ViewModel() {
 
@@ -32,11 +37,14 @@ class PopularViewModel @Inject constructor(
     val stateFlowData
         get() = _stateFlowData.asStateFlow()
 
-    private val _watchlistMovies = MutableStateFlow<List<Movie>>(emptyList())
+    private val _savedMoviesStateFlow = MutableStateFlow<List<Movie>>(emptyList())
+
+    //Change Detail screen to get one movie from db, not all
+    //Change code to prevent repeating of code(example - on click methods)
 
 
     init {
-        fetchWatchlistMovies()
+        getSavedMovies()
         fetchPopularMovies()
         Log.i("myLog", "init of viewModel")
     }
@@ -45,12 +53,13 @@ class PopularViewModel @Inject constructor(
     fun updateFullMovieList() {
         if (fullMovieList.isNotEmpty()) {
             fullMovieList.forEach { movie ->
-                movie.isWatchlist = _watchlistMovies.value.any {
+                val savedMovie = _savedMoviesStateFlow.value.firstOrNull {
                     it.id == movie.id
                 }
+                movie.isWatchlist = savedMovie != null && savedMovie.isWatchlist
+                movie.isFavorite = savedMovie != null && savedMovie.isFavorite
             }
             Log.i("myLog", "updateFullMovieListWorked")
-
             _stateFlowData.value = Resource.Success(fullMovieList)
         }
     }
@@ -61,7 +70,7 @@ class PopularViewModel @Inject constructor(
         try {
             _stateFlowData.value = Resource.Loading()
             val remoteData = getPopularMoviesUseCase.execute(currentPage)
-            Log.i("myLog", "watchlistdata size = ${_watchlistMovies.value.size}")
+            Log.i("myLog", "watchlistdata size = ${_savedMoviesStateFlow.value.size}")
             fullMovieList.addAll(remoteData)
             updateFullMovieList()
         } catch (e: Exception) {
@@ -69,12 +78,12 @@ class PopularViewModel @Inject constructor(
         }
     }
 
-    fun fetchWatchlistMovies() = viewModelScope.launch(Dispatchers.IO) {
-        getWatchlistMoviesUseCase.execute().collect { savedMovies ->
-            _watchlistMovies.value = savedMovies
+    fun getSavedMovies() = viewModelScope.launch(Dispatchers.IO) {
+        getSavedMoviesUseCase.execute().collect { savedMovies ->
+            _savedMoviesStateFlow.value = savedMovies
             updateFullMovieList()
-
         }
+
     }
 
     suspend fun addWatchlistMovie(movie: Movie) {
@@ -85,6 +94,13 @@ class PopularViewModel @Inject constructor(
         deleteFromWatchlistUseCase.execute(movie = movie)
     }
 
+    suspend fun addFavoriteMovie(movie: Movie) {
+        addToFavoriteUseCase.execute(movie = movie)
+    }
+
+    suspend fun deleteFavoriteMovie(movie: Movie) {
+        deleteFromFavoriteUseCase.execute(movie = movie)
+    }
 
     fun fetchNextPage() {
         currentPage++

@@ -10,6 +10,7 @@ data class Movie(
     val year: String,
     val posterPath: String,
     val overview: String,
-    var isWatchlist: Boolean = false
+    var isWatchlist: Boolean = false,
+    var isFavorite: Boolean = false
 
 )
