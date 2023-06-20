@@ -21,6 +21,6 @@ class MovieLocalRepositoryImpl(private val movieDao: MovieDao) : MovieLocalRepos
         } else {
             movieDao.updateMovie(movie)
         }
-
     }
+
 }

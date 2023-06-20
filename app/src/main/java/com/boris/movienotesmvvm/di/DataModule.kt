@@ -6,7 +6,6 @@ import com.boris.movienotesmvvm.common.Constants
 import com.boris.movienotesmvvm.common.Constants.MOVIE_DATABASE
 import com.boris.movienotesmvvm.data.repository.MovieLocalRepositoryImpl
 import com.boris.movienotesmvvm.data.repository.MovieRepositoryImpl
-import com.boris.movienotesmvvm.data.storage.local.MovieDao
 import com.boris.movienotesmvvm.data.storage.local.MovieDatabase
 import com.boris.movienotesmvvm.data.storage.remote.service.MovieService
 import com.boris.movienotesmvvm.domain.repository.MovieLocalRepository

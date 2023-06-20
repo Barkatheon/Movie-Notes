@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,18 +24,17 @@ class FavoriteViewModel @Inject constructor(
     private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase
 ) : ViewModel() {
 
-    private val _savedMoviesStateFlow = MutableStateFlow<List<Movie>>(emptyList())
-    val saveMoviesStateFlow
-        get() = _savedMoviesStateFlow.asStateFlow()
+    private val _favoriteMoviesStateFlow = MutableStateFlow<List<Movie>>(emptyList())
+    val favoriteMoviesStateFlow
+        get() = _favoriteMoviesStateFlow.asStateFlow()
 
     init {
         getSavedMovies()
     }
     private fun getSavedMovies() = viewModelScope.launch(Dispatchers.IO) {
         getSavedMoviesUseCase.execute().collect { savedMovies ->
-            _savedMoviesStateFlow.value = savedMovies.filter { it.isFavorite }
+            _favoriteMoviesStateFlow.value = savedMovies.filter { it.isFavorite }
         }
-
     }
 
     suspend fun addFavoriteMovie(movie: Movie) {

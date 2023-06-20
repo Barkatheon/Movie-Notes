@@ -1,6 +1,15 @@
 <resources>
-    <string name="app_name">MovieNotesMvvm</string>
-    <string name="hello_world">Hello world</string>
+    <string name="app_name">Movie Notes</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="watchlist_movies">Watchlist Movies</string>
+    <string name="favorite_movies">Favorite Movies</string>
+    <string name="movie_details">Movie Details</string>
+    <string name="title_movie_item">Title</string>
+    <string name="year_movie_item">Year</string>
+    <string name="poster_movie_item">Movie Poster</string>
+    <string name="favorite_icon_movie_item">Favorite Icon</string>
+    <string name="watchlist_icon_movie_item">Watchlist Icon</string>
+    <string name="overview_movie_item">Overview</string>
 </resources>

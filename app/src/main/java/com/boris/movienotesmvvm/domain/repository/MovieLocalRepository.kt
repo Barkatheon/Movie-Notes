@@ -1,6 +1,5 @@
 package com.boris.movienotesmvvm.domain.repository
 
-import com.boris.movienotesmvvm.data.storage.local.MovieDao
 import com.boris.movienotesmvvm.domain.model.Movie
 import kotlinx.coroutines.flow.Flow
 

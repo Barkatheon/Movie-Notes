@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +32,7 @@ class FavoriteFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListene
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.title = getString(R.string.favorite_movies)
         return inflater.inflate(R.layout.fragment_favorite, container, false)
     }
 
@@ -44,7 +44,7 @@ class FavoriteFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListene
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                favoriteViewModel.saveMoviesStateFlow.collectLatest { favoriteMovies ->
+                favoriteViewModel.favoriteMoviesStateFlow.collectLatest { favoriteMovies ->
                     adapter.setListOfMovies(favoriteMovies)
                 }
             }
@@ -58,6 +58,11 @@ class FavoriteFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListene
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
+    override fun onMovieClick(item: Movie, view: View) {
+        val movieId = item.id
+        val action = FavoriteFragmentDirections.actionFavoriteFragmentToDetailFragment(movieId)
+        view.findNavController().navigate(action)
+    }
     override fun onWatchlistIconClick(item: Movie) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             if (item.isWatchlist) {
@@ -66,13 +71,7 @@ class FavoriteFragment : Fragment(), MainRecyclerViewAdapter.OnItemzClickListene
                 favoriteViewModel.addWatchlistMovie(movie = item)
             }
         }
-        Toast.makeText(requireContext(), "Added/Deleted watchlist movie", Toast.LENGTH_SHORT).show()
-    }
 
-    override fun onMovieClick(item: Movie, view: View) {
-        val movieId = item.id
-        val action = FavoriteFragmentDirections.actionFavoriteFragmentToDetailFragment(movieId)
-        view.findNavController().navigate(action)
     }
     override fun onFavoriteIconClick(item: Movie) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {

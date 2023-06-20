@@ -3,6 +3,7 @@ package com.boris.movienotesmvvm.presentation.screens
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boris.movienotesmvvm.R
@@ -16,6 +17,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavBar)
         val navHostFragment =

@@ -1,11 +1,12 @@
 package com.boris.movienotesmvvm.presentation.screens.detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boris.movienotesmvvm.common.Resource
 import com.boris.movienotesmvvm.domain.model.Movie
+import com.boris.movienotesmvvm.domain.usecases.AddToFavoriteUseCase
 import com.boris.movienotesmvvm.domain.usecases.AddToWatchlistUseCase
+import com.boris.movienotesmvvm.domain.usecases.DeleteFromFavoriteUseCase
 import com.boris.movienotesmvvm.domain.usecases.DeleteFromWatchlistUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetMovieDetailUseCase
 import com.boris.movienotesmvvm.domain.usecases.GetSavedMoviesUseCase
@@ -20,10 +21,11 @@ class DetailViewModel @Inject constructor(
     private val getMovieDetailUseCase: GetMovieDetailUseCase,
     private val addToWatchlistUseCase: AddToWatchlistUseCase,
     private val deleteFromWatchlistUseCase: DeleteFromWatchlistUseCase,
-    private val getSavedMoviesUseCase: GetSavedMoviesUseCase
+    private val getSavedMoviesUseCase: GetSavedMoviesUseCase,
+    private val addToFavoriteUseCase: AddToFavoriteUseCase,
+    private val deleteFromFavoriteUseCase: DeleteFromFavoriteUseCase
 ) :
     ViewModel() {
-
 
     private val _movieDetailStateFlow = MutableStateFlow<Resource<Movie>>(Resource.Loading())
     val movieDetailStateFlow
@@ -33,7 +35,6 @@ class DetailViewModel @Inject constructor(
     fun fetchMovieDetail(movieId: Int) {
         viewModelScope.launch {
             getSavedMoviesUseCase.execute().collect { savedMovies ->
-                Log.i("myLog", "Database query db movie from detail vm")
                 val databaseMovie = savedMovies.firstOrNull { it.id == movieId }
                 if (databaseMovie != null) {
                     _movieDetailStateFlow.value = Resource.Success(databaseMovie)
@@ -47,11 +48,17 @@ class DetailViewModel @Inject constructor(
 
     }
 
-    suspend fun addToWatchlist(movie: Movie) {
+    suspend fun addWatchlistMovie(movie: Movie) {
         addToWatchlistUseCase.execute(movie = movie)
     }
 
-    suspend fun deleteFromWatchlist(movie: Movie) {
+    suspend fun deleteWatchlistMovie(movie: Movie) {
         deleteFromWatchlistUseCase.execute(movie = movie)
+    }
+    suspend fun addFavoriteMovie(movie: Movie){
+        addToFavoriteUseCase.execute(movie= movie)
+    }
+    suspend fun deleteFavoriteMovie(movie: Movie) {
+        deleteFromFavoriteUseCase.execute(movie = movie)
     }
 }

@@ -1,6 +1,5 @@
 package com.boris.movienotesmvvm.presentation.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +49,7 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val movie = moviesList[position]
         holder.textViewTitle.text = movie.title
-        holder.textViewYear.text = position.toString()
+        holder.textViewYear.text = movie.year
         if (movie.isWatchlist) {
             holder.iconWatchlist.setImageResource(R.drawable.bookmark_added)
         } else {
@@ -84,7 +83,6 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
 
     fun setListOfMovies(list: List<Movie>) {
         if (moviesList.isEmpty()) {
-            Log.i("mylog", "adapter movielist empty")
             moviesList.addAll(list)
             notifyDataSetChanged()
         } else {
@@ -93,7 +91,5 @@ class MainRecyclerViewAdapter : RecyclerView.Adapter<MainRecyclerViewAdapter.Mai
             notifyDataSetChanged()
 
         }
-        Log.i("mylog", "adapter movie list size ${moviesList.size}")
-
     }
 }

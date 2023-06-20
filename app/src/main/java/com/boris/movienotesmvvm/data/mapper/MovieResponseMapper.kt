@@ -10,7 +10,7 @@ fun MovieResponse.toMovie() : Movie {
     return Movie(
         id = id,
         title = title,
-        year = releaseDate,
+        year = releaseDate.take(4),
         posterPath = Constants.POSTER_BASE_URL + posterPath,
         overview = overview
     )

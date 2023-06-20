@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MovieNotesMvvm" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="colorPrimary">@color/dark_gray_bottom_nav</item>
+        <item name="colorPrimaryVariant">@color/dark_gray</item>
+        <item name="colorOnPrimary">@color/light_gray</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+
+        <!-- Customize your theme here. -->
+
+    </style>
+</resources>
